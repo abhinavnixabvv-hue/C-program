@@ -2,6 +2,11 @@ import { useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { 
+  PanelLeftClose,
+  PanelLeftOpen,
+  Menu,
+  Bug,
+  X,
   Play, 
   Copy, 
   Check, 
@@ -34,11 +39,32 @@ export default function App() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const [isCompilerMode, setIsCompilerMode] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isBugReportOpen, setIsBugReportOpen] = useState(false);
+  const [bugForm, setBugForm] = useState({ name: '', email: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleCopy = (code: string, id: string) => {
     navigator.clipboard.writeText(code);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleBugSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    // Simulate API call
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setIsSubmitted(true);
+      setTimeout(() => {
+        setIsBugReportOpen(false);
+        setIsSubmitted(false);
+        setBugForm({ name: '', email: '', message: '' });
+      }, 2000);
+    }, 1500);
   };
 
   const activeSet = questionSets.find(s => s.id === activeSetId) || questionSets[0];
@@ -49,18 +75,62 @@ export default function App() {
   );
 
   return (
-    <div className="flex h-screen bg-grid overflow-hidden">
+    <div className="flex h-screen bg-grid overflow-hidden relative">
+      {/* Mobile Overlay */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="fixed inset-0 bg-zinc-950/60 backdrop-blur-sm z-40 lg:hidden"
+          />
+        )}
+      </AnimatePresence>
+
       {/* Sidebar */}
-      <aside className="w-80 border-r border-zinc-200 bg-white/80 backdrop-blur-md flex flex-col">
+      <motion.aside 
+        initial={false}
+        animate={{ 
+          width: isSidebarCollapsed ? 0 : (typeof window !== 'undefined' && window.innerWidth < 1024 ? 0 : 320),
+          opacity: isSidebarCollapsed ? 0 : 1,
+          x: isMobileMenuOpen ? 0 : (typeof window !== 'undefined' && window.innerWidth < 1024 ? -320 : 0)
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className={cn(
+          "border-r border-zinc-200 bg-white/80 backdrop-blur-md flex flex-col overflow-hidden relative z-50",
+          "fixed inset-y-0 left-0 lg:relative lg:translate-x-0",
+          isMobileMenuOpen ? "w-[280px] translate-x-0" : ""
+        )}
+      >
         <div className="p-6 border-b border-zinc-200">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-zinc-950 rounded-lg">
-              <Terminal className="w-6 h-6 text-white" />
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-zinc-950 rounded-lg">
+                <Terminal className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="font-bold text-lg tracking-tight">C Program Master</h1>
+                <p className="text-xs text-zinc-500 font-medium uppercase tracking-wider">Learning Hub</p>
+              </div>
             </div>
-            <div>
-              <h1 className="font-bold text-lg tracking-tight">C Program Master</h1>
-              <p className="text-xs text-zinc-500 font-medium uppercase tracking-wider">Learning Hub</p>
-            </div>
+            <button 
+              onClick={() => {
+                setIsSidebarCollapsed(true);
+                setIsMobileMenuOpen(false);
+              }}
+              className="p-2 hover:bg-zinc-100 rounded-md text-zinc-500 transition-colors lg:block hidden"
+              title="Collapse Sidebar"
+            >
+              <PanelLeftClose className="w-5 h-5" />
+            </button>
+            <button 
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="p-2 hover:bg-zinc-100 rounded-md text-zinc-500 transition-colors lg:hidden"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
           
           <div className="relative">
@@ -116,19 +186,37 @@ export default function App() {
             </div>
           </div>
         </div>
-      </aside>
+      </motion.aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col overflow-hidden bg-white/40 backdrop-blur-[2px]">
-        <header className="h-16 border-b border-zinc-200 bg-white/80 backdrop-blur-md flex items-center justify-between px-8">
-          <div className="flex items-center gap-2 text-sm font-medium text-zinc-500">
-            <BookOpen className="w-4 h-4" />
-            <span>Question Bank</span>
-            <ChevronRight className="w-4 h-4" />
-            <span className="text-zinc-950">{activeSet.title}</span>
+      <main className="flex-1 flex flex-col overflow-hidden bg-white/40 backdrop-blur-[2px] w-full">
+        <header className="h-16 border-b border-zinc-200 bg-white/80 backdrop-blur-md flex items-center justify-between px-4 lg:px-8">
+          <div className="flex items-center gap-2 lg:gap-4 text-sm font-medium text-zinc-500 overflow-hidden">
+            <button 
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="p-2 -ml-2 hover:bg-zinc-100 rounded-md text-zinc-950 transition-colors lg:hidden"
+              title="Open Menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            {(isSidebarCollapsed && !isMobileMenuOpen) && (
+              <button 
+                onClick={() => setIsSidebarCollapsed(false)}
+                className="p-2 -ml-4 hover:bg-zinc-100 rounded-md text-zinc-950 transition-colors hidden lg:block"
+                title="Expand Sidebar"
+              >
+                <PanelLeftOpen className="w-5 h-5" />
+              </button>
+            )}
+            <div className="flex items-center gap-2 truncate">
+              <BookOpen className="w-4 h-4 flex-shrink-0 hidden sm:block" />
+              <span className="hidden sm:inline">Question Bank</span>
+              <ChevronRight className="w-4 h-4 flex-shrink-0 hidden sm:block" />
+              <span className="text-zinc-950 truncate">{activeSet.title}</span>
+            </div>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 mr-2">
+          <div className="flex items-center gap-2 lg:gap-4">
+            <div className="hidden sm:flex items-center gap-2 mr-2">
               <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Compiler Mode</span>
               <button 
                 onClick={() => setIsCompilerMode(!isCompilerMode)}
@@ -145,8 +233,8 @@ export default function App() {
                 />
               </button>
             </div>
-            <Badge variant="outline" className="font-mono text-[10px] uppercase tracking-widest">
-              {activeSet.questions.length} Questions
+            <Badge variant="outline" className="font-mono text-[10px] uppercase tracking-widest hidden xs:inline-flex">
+              {activeSet.questions.length} Qs
             </Badge>
           </div>
         </header>
@@ -287,7 +375,7 @@ export default function App() {
                 animate={{ width: "40%", opacity: 1 }}
                 exit={{ width: 0, opacity: 0 }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
-                className="bg-zinc-100 flex flex-col items-center justify-center p-8 text-center"
+                className="bg-zinc-100 hidden lg:flex flex-col items-center justify-center p-8 text-center"
               >
                 <div className="max-w-xs">
                   <div className="w-16 h-16 bg-zinc-950 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl">
@@ -312,6 +400,125 @@ export default function App() {
           </AnimatePresence>
         </div>
       </main>
+
+      {/* Bug Report FAB */}
+      <button 
+        onClick={() => setIsBugReportOpen(true)}
+        className="fixed bottom-6 right-6 p-4 bg-zinc-950 text-white rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all z-[60] group"
+        title="Report a Bug"
+      >
+        <Bug className="w-6 h-6" />
+        <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-zinc-950 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+          Report Bug
+        </span>
+      </button>
+
+      {/* Bug Report Modal */}
+      <AnimatePresence>
+        {isBugReportOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsBugReportOpen(false)}
+              className="absolute inset-0 bg-zinc-950/60 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden"
+            >
+              <div className="p-6 border-b border-zinc-100 flex items-center justify-between bg-zinc-50">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-zinc-950 rounded-lg">
+                    <Bug className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="font-bold text-zinc-950">Report a Bug</h2>
+                    <p className="text-xs text-zinc-500">Help us improve C Program Master</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setIsBugReportOpen(false)}
+                  className="p-2 hover:bg-zinc-200 rounded-full text-zinc-500 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="p-6">
+                {isSubmitted ? (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="py-12 text-center"
+                  >
+                    <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Check className="w-8 h-8" />
+                    </div>
+                    <h3 className="text-xl font-bold text-zinc-950 mb-2">Report Sent!</h3>
+                    <p className="text-zinc-500">Thank you for your feedback. We'll look into it.</p>
+                  </motion.div>
+                ) : (
+                  <form onSubmit={handleBugSubmit} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 ml-1">Name</label>
+                        <input 
+                          required
+                          type="text"
+                          value={bugForm.name}
+                          onChange={(e) => setBugForm({ ...bugForm, name: e.target.value })}
+                          placeholder="Your Name"
+                          className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-950/5 focus:border-zinc-950 transition-all text-sm"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 ml-1">Email</label>
+                        <input 
+                          required
+                          type="email"
+                          value={bugForm.email}
+                          onChange={(e) => setBugForm({ ...bugForm, email: e.target.value })}
+                          placeholder="your@email.com"
+                          className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-950/5 focus:border-zinc-950 transition-all text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 ml-1">Issue Description</label>
+                      <textarea 
+                        required
+                        rows={4}
+                        value={bugForm.message}
+                        onChange={(e) => setBugForm({ ...bugForm, message: e.target.value })}
+                        placeholder="Describe the bug or suggest an improvement..."
+                        className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-950/5 focus:border-zinc-950 transition-all text-sm resize-none"
+                      />
+                    </div>
+                    <button 
+                      disabled={isSubmitting}
+                      type="submit"
+                      className="w-full py-3 bg-zinc-950 text-white rounded-xl font-bold text-sm hover:bg-zinc-800 transition-all shadow-lg shadow-zinc-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        "Submit Report"
+                      )}
+                    </button>
+                  </form>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
