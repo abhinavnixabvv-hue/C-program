@@ -66,13 +66,13 @@ export const questionSets: QuestionSet[] = [
         id: "3-1",
         question: "Part A: Write a C program to read and display one dimensional integer array.",
         answer: "Use a loop to input values into the array and another loop to print them.",
-        code: "#include <stdio.h>\n\nint main() {\n    int n, i;\n    printf(\"Size: \"); scanf(\"%d\", &n);\n    int arr[n];\n    for(i=0; i<n; i++) scanf(\"%d\", &arr[i]);\n    for(i=0; i<n; i++) printf(\"%d \", arr[i]);\n    return 0;\n}"
+        code: "#include <stdio.h>\n\nint main() {\n    int n;\n\n    printf(\"Enter size of array: \");\n    scanf(\"%d\", &n);\n\n    int arr[n];\n\n    printf(\"Enter %d elements:\\n\", n);\n\n    for(int i = 0; i < n; i++) {\n        scanf(\"%d\", &arr[i]);\n    }\n\n    printf(\"Array elements are:\\n\");\n\n    for(int i = 0; i < n; i++) {\n        printf(\"%d \", arr[i]);\n    }\n\n    return 0;\n}"
       },
       {
         id: "3-2",
         question: "Part A: Write a C program to determine whether a given natural number is an Armstrong number or not.",
         answer: "An Armstrong number is a number that is equal to the sum of its own digits each raised to the power of the number of digits.",
-        code: "#include <stdio.h>\n#include <math.h>\n\nint main() {\n    int org, temp, rem, digits = 0, sum = 0;\n\n    scanf(\"%d\", &org);\n\n    temp = org;\n    while(temp > 0) {\n        digits++;\n        temp /= 10;\n    }\n\n    temp = org;\n    while(temp > 0) {\n        rem = temp % 10;\n        sum += pow(rem, digits);\n        temp /= 10;\n    }\n\n    if(sum == org)\n        printf(\"Armstrong Number\");\n    else\n        printf(\"Not Armstrong Number\");\n\n    return 0;\n}"
+        code: "#include <stdio.h>\n#include <math.h>\n\nint main() {\n    int org, temp, rem, digits = 0;\n    double sum = 0;\n\n    printf(\"Enter a number: \");\n    scanf(\"%d\", &org);\n\n    temp = org;\n\n    while(temp != 0) {\n        digits++;\n        temp = temp / 10;\n    }\n\n    temp = org;\n\n    while(temp != 0) {\n        rem = temp % 10;\n        sum = sum + pow(rem, digits);\n        temp = temp / 10;\n    }\n\n    if(sum == org)\n        printf(\"%d is Armstrong Number\",org);\n    else\n        printf(\"%d is not Armstrong Number\",org);\n\n    return 0;\n}"
       },
       { id: "3-3", question: "Part B: What is recursion?", answer: "Recursion is a technique where a function calls itself to solve a smaller version of the same problem. It must have a base case to terminate and prevent infinite recursion." },
       { id: "3-4", question: "Part B: What is a structure in C?", answer: "A structure is a user-defined data type that allows grouping variables of different types under a single name. It is useful for representing complex data like student or employee records." },
@@ -112,13 +112,13 @@ export const questionSets: QuestionSet[] = [
         id: "5-1",
         question: "Part A: Write a program to read a string and find its length using built-in functions.",
         answer: "Use 'strlen()' to find the length.",
-        code: "#include <stdio.h>\n#include <string.h>\n\nint main() {\n    char str[100];\n    gets(str);\n    printf(\"Length: %lu\", strlen(str));\n    return 0;\n}"
+        code: "#include <stdio.h>\n#include <string.h>\n\nint main() {\n    char str[100];\n\n    printf(\"Enter a string: \");\n    fgets(str, sizeof(str), stdin);\n\n    printf(\"Length = %lu\", strlen(str) - 1);\n\n    return 0;\n}"
       },
       {
         id: "5-2",
         question: "Part A: Write a C program to check whether the given element is present or not in the array using linear search.",
         answer: "Iterate through the array and compare each element with the target value.",
-        code: "#include <stdio.h>\n\nint main() {\n    int a[100], n, key, i, found = 0;\n\n    scanf(\"%d\", &n);\n\n    for(i = 0; i < n; i++)\n        scanf(\"%d\", &a[i]);\n\n    scanf(\"%d\", &key);\n\n    for(i = 0; i < n; i++) {\n        if(a[i] == key) {\n            found = 1;\n            break;\n        }\n    }\n\n    if(found)\n        printf(\"Element found\");\n    else\n        printf(\"Element not found\");\n\n    return 0;\n}"
+        code: "#include <stdio.h>\n\nint main() {\n    int a[100], n, key, i, found = 0;\n\n    printf(\"Enter number of elements: \");\n    scanf(\"%d\", &n);\n\n    printf(\"Enter array elements:\\n\");\n    for(i = 0; i < n; i++) {\n        scanf(\"%d\", &a[i]);\n    }\n\n    printf(\"Enter element to search: \");\n    scanf(\"%d\", &key);\n\n    for(i = 0; i < n; i++) {\n        if(a[i] == key) {\n            found = 1;\n            break;\n        }\n    }\n\n    if(found)\n        printf(\"Element found at position %d\", i + 1);\n    else\n        printf(\"Element not found\");\n\n    return 0;\n}"
       },
       { id: "5-3", question: "Part B: What is linear search?", answer: "Linear search is a simple searching algorithm that checks every element in an array sequentially until the desired element is found or the entire array has been scanned." },
       { id: "5-4", question: "Part B: What is an array index?", answer: "An array index is a numerical value used to identify the position of an element within an array. In C, array indexing always starts from 0 for the first element." },
@@ -210,7 +210,7 @@ export const questionSets: QuestionSet[] = [
         id: "9-2",
         question: "Part A: Write a program to read and print employee data using array of structure.",
         answer: "Define a structure for Employee and create an array of that structure type.",
-        code: "#include <stdio.h>\n\nstruct Employee {\n    char name[50];\n    int id;\n};\n\nint main() {\n    struct Employee emp[2];\n    for(int i=0; i<2; i++) {\n        scanf(\"%s %d\", emp[i].name, &emp[i].id);\n    }\n    for(int i=0; i<2; i++) {\n        printf(\"Name: %s, ID: %d\\n\", emp[i].name, emp[i].id);\n    }\n    return 0;\n}"
+        code: "#include <stdio.h>\n\nstruct Employee {\n    char name[50];\n    int id;\n};\n\nint main() {\n    struct Employee emp[2];\n    int i;\n\n    for(i = 0; i < 2; i++) {\n        printf(\"Enter name and ID of employee %d: \", i + 1);\n        scanf(\"%s\", emp[i].name);\n        scanf(\"%d\", &emp[i].id);\n    }\n\n    printf(\"\\nEmployee Details:\\n\");\n\n    for(i = 0; i < 2; i++) {\n        printf(\"Name: %s\\n\", emp[i].name);\n        printf(\"ID: %d\\n\", emp[i].id);\n    }\n\n    return 0;\n}"
       },
       { id: "9-3", question: "Part B: What is a structure in C?", answer: "A structure is a user-defined data type that groups variables of different data types under one name. It is used to represent a single entity with multiple attributes, like a book or a student." },
       { id: "9-4", question: "Part B: What is struct keyword?", answer: "The 'struct' keyword is used to define a structure. It tells the compiler that a new user-defined data type is being created, followed by the structure name and its member variables." },
@@ -227,7 +227,7 @@ export const questionSets: QuestionSet[] = [
         id: "10-1",
         question: "Part A: Write a C program to evaluate arithmetic expression D= (a+b)*(c+a) and display the result.",
         answer: "Input a, b, c and compute the expression.",
-        code: "#include <stdio.h>\n\nint main() {\n    int a, b, c, d;\n    scanf(\"%d %d %d\", &a, &b, &c);\n    d = (a + b) * (c + a);\n    printf(\"D = %d\", d);\n    return 0;\n}"
+        code: "#include <stdio.h>\n\nint main() {\n    int a, b, c, d;\n\n    printf(\"Enter values of a, b and c: \");\n    scanf(\"%d %d %d\", &a, &b, &c);\n\n    d = (a + b) * (c + a);\n\n    printf(\"D = %d\", d);\n\n    return 0;\n}"
       },
       {
         id: "10-2",
@@ -250,7 +250,7 @@ export const questionSets: QuestionSet[] = [
         id: "11-1",
         question: "Part A: Write a C program that prompts the user to enter the radius of the circle and computes the perimeter of a circle.",
         answer: "Perimeter = 2 * π * r.",
-        code: "#include <stdio.h>\n\nint main() {\n    float r, p;\n    scanf(\"%f\", &r);\n    p = 2 * 3.14 * r;\n    printf(\"Perimeter: %f\", p);\n    return 0;\n}"
+        code: "#include <stdio.h>\n\nint main() {\n    float r, p;\n\n    printf(\"Enter radius: \");\n    scanf(\"%f\", &r);\n\n    p = 2 * 3.14 * r;\n\n    printf(\"Perimeter = %.2f\", p);\n\n    return 0;\n}"
       },
       {
         id: "11-2",
@@ -273,7 +273,7 @@ export const questionSets: QuestionSet[] = [
         id: "12-1",
         question: "Part A: Write a C program that takes two positive integers as input and prints the smallest among them.",
         answer: "Use if-else to find the minimum.",
-        code: "#include <stdio.h>\n\nint main() {\n    int a, b;\n    scanf(\"%d %d\", &a, &b);\n    if(a < b) printf(\"Smallest: %d\", a);\n    else printf(\"Smallest: %d\", b);\n    return 0;\n}"
+        code: "#include <stdio.h>\n\nint main() {\n    int a, b;\n\n    printf(\"Enter two numbers: \");\n    scanf(\"%d %d\", &a, &b);\n\n    if(a < b)\n        printf(\"Smallest = %d\", a);\n    else\n        printf(\"Smallest = %d\", b);\n\n    return 0;\n}"
       },
       {
         id: "12-2",
