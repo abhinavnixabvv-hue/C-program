@@ -55,7 +55,16 @@ export default function App() {
   const handleBugSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate API call
+    
+    // Construct the mailto link
+    const subject = encodeURIComponent(`Bug Report - C Program Master (from ${bugForm.name})`);
+    const body = encodeURIComponent(`Name: ${bugForm.name}\nEmail: ${bugForm.email}\n\nIssue Description:\n${bugForm.message}`);
+    const mailtoLink = `mailto:abhinavnixabvv@gmail.com?subject=${subject}&body=${body}`;
+    
+    // Open the mail client
+    window.location.href = mailtoLink;
+
+    // Show success state
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSubmitted(true);
@@ -64,7 +73,7 @@ export default function App() {
         setIsSubmitted(false);
         setBugForm({ name: '', email: '', message: '' });
       }, 2000);
-    }, 1500);
+    }, 1000);
   };
 
   const activeSet = questionSets.find(s => s.id === activeSetId) || questionSets[0];
