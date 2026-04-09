@@ -135,7 +135,7 @@ export const questionSets: QuestionSet[] = [
         id: "6-1",
         question: "Part A: Write a recursive C program to find the factorial of a given number.",
         answer: "Factorial of n is n * factorial(n-1), with base case factorial(0) = 1.",
-        code: "#include <stdio.h>\n\nlong int fact(int n) {\n    if (n >= 1) return n * fact(n - 1);\n    else return 1;\n}\n\nint main() {\n    int n; scanf(\"%d\", &n);\n    printf(\"Factorial: %ld\", fact(n));\n    return 0;\n}"
+        code: "#include <stdio.h>\n\nint factorial(int n)\n{\n    if (n == 0 || n == 1)   // base case\n        return 1;\n\n    return n * factorial(n - 1);   // recursive call\n}\n\nint main()\n{\n    int n;\n\n    printf(\"Enter a number: \");\n    scanf(\"%d\", &n);\n\n    printf(\"Factorial of %d is %d\\n\", n, factorial(n));\n\n    return 0;\n}"
       },
       {
         id: "6-2",

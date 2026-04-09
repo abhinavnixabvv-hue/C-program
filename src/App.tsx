@@ -108,9 +108,13 @@ export default function App() {
       <motion.aside 
         initial={false}
         animate={{ 
-          width: isSidebarCollapsed ? 0 : (typeof window !== 'undefined' && window.innerWidth < 1024 ? 0 : 320),
-          opacity: isSidebarCollapsed ? 0 : 1,
-          x: isMobileMenuOpen ? 0 : (typeof window !== 'undefined' && window.innerWidth < 1024 ? -320 : 0)
+          x: (typeof window !== 'undefined' && window.innerWidth < 1024)
+            ? (isMobileMenuOpen ? 0 : -280)
+            : 0,
+          width: (typeof window !== 'undefined' && window.innerWidth < 1024)
+            ? 280
+            : (isSidebarCollapsed ? 0 : 320),
+          opacity: 1
         }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className={cn(
@@ -189,7 +193,7 @@ export default function App() {
         </div>
 
         <div className="p-4 border-t border-zinc-200 bg-zinc-50/50">
-          <div className="flex items-center gap-3 p-3 rounded-lg border border-zinc-200 bg-white">
+          <div className="flex items-center gap-3 p-3 rounded-lg border border-zinc-200 bg-white mb-4">
             <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center">
               <GraduationCap className="w-4 h-4 text-zinc-600" />
             </div>
@@ -199,6 +203,9 @@ export default function App() {
                 <div className="h-full bg-zinc-950" style={{ width: `${(activeSetId / 12) * 100}%` }}></div>
               </div>
             </div>
+          </div>
+          <div className="text-center">
+            <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em]">Created by Aizen</p>
           </div>
         </div>
       </motion.aside>
@@ -379,6 +386,10 @@ export default function App() {
                     Next Topic: {activeSetId < 12 ? questionSets[activeSetId].title : "All Sets Completed"}
                   </button>
                 </div>
+
+                <footer className="mt-20 pb-12 border-t border-zinc-100 pt-8 text-center">
+                  <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.3em]">Created by Aizen</p>
+                </footer>
               </motion.div>
             </div>
           </div>
