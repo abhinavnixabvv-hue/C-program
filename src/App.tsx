@@ -21,6 +21,8 @@ import {
 import { motion, AnimatePresence } from "motion/react";
 
 import { questionSets, QuestionSet } from "@/src/data/questions";
+import { db } from "@/src/lib/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { 
   Accordion, 
   AccordionContent, 
@@ -52,28 +54,32 @@ export default function App() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  const handleBugSubmit = (e: React.FormEvent) => {
+  const handleBugSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Construct the mailto link
-    const subject = encodeURIComponent(`Bug Report - C Program Master (from ${bugForm.name})`);
-    const body = encodeURIComponent(`Name: ${bugForm.name}\nEmail: ${bugForm.email}\n\nIssue Description:\n${bugForm.message}`);
-    const mailtoLink = `mailto:abhinavnixabvv@gmail.com?subject=${subject}&body=${body}`;
-    
-    // Open the mail client
-    window.location.href = mailtoLink;
+    try {
+      // Send directly to Firestore
+      await addDoc(collection(db, "bug_reports"), {
+        name: bugForm.name,
+        email: bugForm.email,
+        message: bugForm.message,
+        createdAt: serverTimestamp()
+      });
 
-    // Show success state
-    setTimeout(() => {
       setIsSubmitting(false);
       setIsSubmitted(true);
+      
       setTimeout(() => {
         setIsBugReportOpen(false);
         setIsSubmitted(false);
         setBugForm({ name: '', email: '', message: '' });
       }, 2000);
-    }, 1000);
+    } catch (error) {
+      console.error("Error submitting bug report:", error);
+      setIsSubmitting(false);
+      alert("Failed to send report. Please try again later.");
+    }
   };
 
   const activeSet = questionSets.find(s => s.id === activeSetId) || questionSets[0];

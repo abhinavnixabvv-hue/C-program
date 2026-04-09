@@ -1,0 +1,36 @@
+{
+  "entities": {
+    "BugReport": {
+      "title": "Bug Report",
+      "description": "A report of a bug or improvement suggestion from a user",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the user reporting the bug"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The email of the user reporting the bug"
+        },
+        "message": {
+          "type": "string",
+          "description": "The detailed description of the bug"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the bug was reported"
+        }
+      },
+      "required": ["name", "email", "message", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/bug_reports/{reportId}": {
+      "schema": "BugReport",
+      "description": "Collection of bug reports"
+    }
+  }
+}
