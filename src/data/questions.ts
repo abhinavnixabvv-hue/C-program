@@ -112,7 +112,7 @@ export const questionSets: QuestionSet[] = [
         id: "5-1",
         question: "Part A: Write a program to read a string and find its length using built-in functions.",
         answer: "Use 'strlen()' to find the length.",
-        code: "#include <stdio.h>\n#include <string.h>\n\nint main() {\n    char str[100];\n\n    printf(\"Enter a string: \");\n    fgets(str, sizeof(str), stdin);\n\n    printf(\"Length = %lu\", strlen(str));\n\n    return 0;\n}"
+        code: "#include <stdio.h>\n#include <string.h>\n\nint main() {\n    char str[100];\n\n    printf(\"Enter a string: \");\n    fgets(str, sizeof(str), stdin);\n\n    printf(\"Length = %lu\", strlen(str) - 1);\n\n    return 0;\n}"
       },
       {
         id: "5-2",
