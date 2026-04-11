@@ -16,7 +16,10 @@ import {
   FileText, 
   GraduationCap, 
   Search,
-  Terminal
+  Terminal,
+  Home,
+  Github,
+  Info
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -35,7 +38,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 export default function App() {
-  const [activeSetId, setActiveSetId] = useState<number>(1);
+  const [activeSetId, setActiveSetId] = useState<number>(0); // 0 for Home
   const [searchQuery, setSearchQuery] = useState("");
 
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -165,7 +168,23 @@ export default function App() {
         </div>
 
         <div className="flex-1 px-4 pb-6 overflow-y-auto custom-scrollbar">
+          <div className="space-y-1 mb-6">
+            <button
+              onClick={() => setActiveSetId(0)}
+              className={cn(
+                "w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-all group",
+                activeSetId === 0 
+                  ? "bg-zinc-950 text-white shadow-lg shadow-zinc-200" 
+                  : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
+              )}
+            >
+              <Home className={cn("w-4 h-4", activeSetId === 0 ? "text-white" : "text-zinc-400")} />
+              <span>Home</span>
+            </button>
+          </div>
+
           <div className="space-y-1">
+            <p className="px-3 text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Question Sets</p>
             {filteredSets.map((set) => (
               <button
                 key={set.id}
@@ -205,7 +224,7 @@ export default function App() {
             </div>
           </div>
           <div className="text-center">
-            <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em]">Created by Aizen</p>
+            {/* Removed credit */}
           </div>
         </div>
       </motion.aside>
@@ -234,7 +253,7 @@ export default function App() {
               <BookOpen className="w-4 h-4 flex-shrink-0 hidden sm:block" />
               <span className="hidden sm:inline">Question Bank</span>
               <ChevronRight className="w-4 h-4 flex-shrink-0 hidden sm:block" />
-              <span className="text-zinc-950 truncate">{activeSet.title}</span>
+              <span className="text-zinc-950 truncate">{activeSetId === 0 ? "Home" : activeSet.title}</span>
             </div>
           </div>
           <div className="flex items-center gap-2 lg:gap-4">
@@ -267,130 +286,222 @@ export default function App() {
             isCompilerMode ? "border-r border-zinc-200" : ""
           )}>
             <div className="max-w-4xl mx-auto p-8 lg:p-12">
-              <motion.div
-                key={activeSetId}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-              >
-                <div className="mb-12">
-                  <h2 className="text-4xl font-bold tracking-tight text-zinc-950 mb-4">
-                    {activeSet.title}
-                  </h2>
-                  <p className="text-zinc-500 max-w-2xl leading-relaxed">
-                    Master the core concepts of C programming through this curated set of questions. 
-                    Each question is designed to test your understanding and provide practical insights.
-                  </p>
-                </div>
+              <AnimatePresence mode="wait">
+                {activeSetId === 0 ? (
+                  <motion.div
+                    key="home"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    className="space-y-12"
+                  >
+                    <div className="space-y-6">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Welcome to C Program Master</span>
+                      </div>
+                      <h2 className="text-5xl lg:text-6xl font-bold tracking-tight text-zinc-950 leading-[1.1]">
+                        Your Journey to <span className="text-emerald-600">C Mastery</span> Starts Here.
+                      </h2>
+                      <p className="text-zinc-500 text-lg max-w-2xl leading-relaxed">
+                        A comprehensive collection of C programming questions and solutions, 
+                        designed to help you build a solid foundation in computer science.
+                      </p>
+                    </div>
 
-                {/* @ts-ignore */}
-                <Accordion type="single" collapsible className="space-y-4">
-                  {activeSet.questions.map((q, index) => (
-                    <AccordionItem 
-                      key={q.id} 
-                      value={q.id}
-                      className="border border-zinc-200 rounded-xl bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-                    >
-                      <AccordionTrigger className="px-6 py-4 hover:no-underline group">
-                        <div className="flex items-start gap-4 text-left">
-                          <span className="font-mono text-zinc-400 mt-1 text-xs">Q{index + 1}</span>
-                          <span className="font-semibold text-zinc-900 group-hover:text-zinc-950 transition-colors">
-                            {q.question}
-                          </span>
-                        </div>
-                      </AccordionTrigger>
-                      <AccordionContent className="px-6 pb-6 pt-2">
-                        <div className="pl-10 space-y-6">
-                          <div className="flex gap-3">
-                            <div className="mt-1">
-                              <FileText className="w-4 h-4 text-zinc-400" />
-                            </div>
-                            <div className="flex-1">
-                              <p className="text-zinc-600 leading-relaxed text-sm">
-                                {q.answer}
-                              </p>
-                            </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <Card className="border-zinc-200 shadow-sm hover:shadow-md transition-shadow bg-white/50 backdrop-blur-sm">
+                        <CardHeader>
+                          <div className="w-12 h-12 bg-zinc-950 rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-zinc-200">
+                            <Info className="w-6 h-6 text-white" />
                           </div>
+                          <CardTitle className="text-xl">About this Project</CardTitle>
+                          <CardDescription className="text-zinc-500 leading-relaxed">
+                            This platform is a dedicated resource for students and developers to practice C programming. 
+                            It covers everything from basic syntax to advanced data structures.
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                          <div className="p-5 bg-zinc-50 rounded-2xl border border-zinc-100">
+                            <p className="text-sm font-bold text-zinc-900">Developed by Abhinav N</p>
+                            <p className="text-xs text-zinc-500 mt-1 font-medium">Part of Hexnic AI</p>
+                            <a 
+                              href="https://hexnicai.vercel.app/" 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="mt-4 inline-flex items-center justify-center w-full py-2 bg-emerald-600 text-white rounded-xl font-bold text-xs hover:bg-emerald-700 transition-all shadow-md shadow-emerald-100"
+                            >
+                              Visit Hexnic AI
+                            </a>
+                          </div>
+                          <div className="flex items-center gap-4">
+                            <a 
+                              href="https://github.com/abhinavnixabvv-hue" 
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 text-sm font-bold text-zinc-950 hover:text-emerald-600 transition-colors"
+                            >
+                              <Github className="w-5 h-5" />
+                              Connect on GitHub
+                            </a>
+                          </div>
+                        </CardContent>
+                      </Card>
 
-                          {q.code && (
-                            <div className="rounded-lg overflow-hidden border border-zinc-200">
-                              <div className="bg-zinc-900 px-4 py-2 flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                  <Code2 className="w-3 h-3 text-zinc-400" />
-                                  <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest">C Code Snippet</span>
+                      <Card className="border-zinc-200 shadow-sm hover:shadow-md transition-shadow bg-white/50 backdrop-blur-sm">
+                        <CardHeader>
+                          <div className="w-12 h-12 bg-emerald-500 rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-emerald-100">
+                            <Play className="w-6 h-6 text-white" />
+                          </div>
+                          <CardTitle className="text-xl">Get Started</CardTitle>
+                          <CardDescription className="text-zinc-500 leading-relaxed">
+                            Select a topic from the sidebar to begin your practice. Each set contains curated questions with detailed solutions and runnable code.
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="pt-4">
+                          <button 
+                            onClick={() => setActiveSetId(1)}
+                            className="w-full py-4 bg-zinc-950 text-white rounded-2xl font-bold text-sm hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-200 active:scale-[0.98]"
+                          >
+                            Start Learning Now
+                          </button>
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    <footer className="mt-20 pb-12 border-t border-zinc-100 pt-8 text-center">
+                      {/* Removed credit */}
+                    </footer>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key={activeSetId}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                  >
+                    <div className="mb-12">
+                      <h2 className="text-4xl font-bold tracking-tight text-zinc-950 mb-4">
+                        {activeSet.title}
+                      </h2>
+                      <p className="text-zinc-500 max-w-2xl leading-relaxed">
+                        Master the core concepts of C programming through this curated set of questions. 
+                        Each question is designed to test your understanding and provide practical insights.
+                      </p>
+                    </div>
+
+                    {/* @ts-ignore */}
+                    <Accordion type="single" collapsible className="space-y-4">
+                      {activeSet.questions.map((q, index) => (
+                        <AccordionItem 
+                          key={q.id} 
+                          value={q.id}
+                          className="border border-zinc-200 rounded-xl bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                        >
+                          <AccordionTrigger className="px-6 py-4 hover:no-underline group">
+                            <div className="flex items-start gap-4 text-left">
+                              <span className="font-mono text-zinc-400 mt-1 text-xs">Q{index + 1}</span>
+                              <span className="font-semibold text-zinc-900 group-hover:text-zinc-950 transition-colors">
+                                {q.question}
+                              </span>
+                            </div>
+                          </AccordionTrigger>
+                          <AccordionContent className="px-6 pb-6 pt-2">
+                            <div className="pl-10 space-y-6">
+                              <div className="flex gap-3">
+                                <div className="mt-1">
+                                  <FileText className="w-4 h-4 text-zinc-400" />
                                 </div>
-                                <div className="flex items-center gap-2">
-                                  <button 
-                                    onClick={() => handleCopy(q.code || "", q.id)}
-                                    className="flex items-center gap-1.5 px-2 py-1 rounded bg-white/5 hover:bg-white/10 text-[10px] font-medium text-zinc-400 transition-colors"
-                                  >
-                                    {copiedId === q.id ? (
-                                      <>
-                                        <Check className="w-3 h-3 text-emerald-400" />
-                                        Copied
-                                      </>
-                                    ) : (
-                                      <>
-                                        <Copy className="w-3 h-3" />
-                                        Copy
-                                      </>
-                                    )}
-                                  </button>
-                                  <button 
-                                    onClick={() => {
-                                      handleCopy(q.code || "", q.id);
-                                      window.open("https://www.programiz.com/c-programming/online-compiler/", "_blank");
-                                    }}
-                                    className="flex items-center gap-1.5 px-2 py-1 rounded bg-emerald-500/10 hover:bg-emerald-500/20 text-[10px] font-medium text-emerald-400 transition-colors"
-                                  >
-                                    <Play className="w-3 h-3" />
-                                    Run Code
-                                  </button>
+                                <div className="flex-1">
+                                  <p className="text-zinc-600 leading-relaxed text-sm">
+                                    {q.answer}
+                                  </p>
                                 </div>
                               </div>
-                              <SyntaxHighlighter 
-                                language="c" 
-                                style={vscDarkPlus}
-                                customStyle={{
-                                  margin: 0,
-                                  padding: '1.5rem',
-                                  fontSize: '0.85rem',
-                                  fontFamily: 'var(--font-mono)',
-                                  backgroundColor: '#09090b'
-                                }}
-                              >
-                                {q.code}
-                              </SyntaxHighlighter>
+
+                              {q.code && (
+                                <div className="rounded-lg overflow-hidden border border-zinc-200">
+                                  <div className="bg-zinc-900 px-4 py-2 flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <Code2 className="w-3 h-3 text-zinc-400" />
+                                      <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest">C Code Snippet</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <button 
+                                        onClick={() => handleCopy(q.code || "", q.id)}
+                                        className="flex items-center gap-1.5 px-2 py-1 rounded bg-white/5 hover:bg-white/10 text-[10px] font-medium text-zinc-400 transition-colors"
+                                      >
+                                        {copiedId === q.id ? (
+                                          <>
+                                            <Check className="w-3 h-3 text-emerald-400" />
+                                            Copied
+                                          </>
+                                        ) : (
+                                          <>
+                                            <Copy className="w-3 h-3" />
+                                            Copy
+                                          </>
+                                        )}
+                                      </button>
+                                      <button 
+                                        onClick={() => {
+                                          handleCopy(q.code || "", q.id);
+                                          window.open("https://www.programiz.com/c-programming/online-compiler/", "_blank");
+                                        }}
+                                        className="flex items-center gap-1.5 px-2 py-1 rounded bg-emerald-500/10 hover:bg-emerald-500/20 text-[10px] font-medium text-emerald-400 transition-colors"
+                                      >
+                                        <Play className="w-3 h-3" />
+                                        Run Code
+                                      </button>
+                                    </div>
+                                  </div>
+                                  <SyntaxHighlighter 
+                                    language="c" 
+                                    style={vscDarkPlus}
+                                    customStyle={{
+                                      margin: 0,
+                                      padding: '1.5rem',
+                                      fontSize: '0.85rem',
+                                      fontFamily: 'var(--font-mono)',
+                                      backgroundColor: '#09090b'
+                                    }}
+                                  >
+                                    {q.code}
+                                  </SyntaxHighlighter>
+                                </div>
+                              )}
                             </div>
-                          )}
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
+                          </AccordionContent>
+                        </AccordionItem>
+                      ))}
+                    </Accordion>
+                    
+                    {/* Footer CTA */}
+                    <div className="mt-20 p-8 rounded-2xl bg-zinc-950 text-white flex flex-col items-center text-center">
+                      <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-6">
+                        <GraduationCap className="w-6 h-6" />
+                      </div>
+                      <h3 className="text-xl font-bold mb-2">Ready for the next set?</h3>
+                      <p className="text-zinc-400 text-sm mb-8 max-w-md">
+                        You've completed {activeSet.title}. Continue your journey to master C programming.
+                      </p>
+                      <button 
+                        onClick={() => activeSetId < 12 && setActiveSetId(activeSetId + 1)}
+                        disabled={activeSetId === 12}
+                        className="px-8 py-3 bg-white text-zinc-950 rounded-full font-bold text-sm hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        Next Topic: {activeSetId < 12 ? questionSets[activeSetId].title : "All Sets Completed"}
+                      </button>
+                    </div>
 
-                {/* Footer CTA */}
-                <div className="mt-20 p-8 rounded-2xl bg-zinc-950 text-white flex flex-col items-center text-center">
-                  <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-6">
-                    <GraduationCap className="w-6 h-6" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-2">Ready for the next set?</h3>
-                  <p className="text-zinc-400 text-sm mb-8 max-w-md">
-                    You've completed {activeSet.title}. Continue your journey to master C programming.
-                  </p>
-                  <button 
-                    onClick={() => activeSetId < 12 && setActiveSetId(activeSetId + 1)}
-                    disabled={activeSetId === 12}
-                    className="px-8 py-3 bg-white text-zinc-950 rounded-full font-bold text-sm hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Next Topic: {activeSetId < 12 ? questionSets[activeSetId].title : "All Sets Completed"}
-                  </button>
-                </div>
-
-                <footer className="mt-20 pb-12 border-t border-zinc-100 pt-8 text-center">
-                  <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.3em]">Created by Aizen</p>
-                </footer>
-              </motion.div>
+                    <footer className="mt-20 pb-12 border-t border-zinc-100 pt-8 text-center">
+                      {/* Removed credit */}
+                    </footer>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
 
