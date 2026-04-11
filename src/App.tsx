@@ -243,13 +243,23 @@ export default function App() {
               </div>
             </div>
 
-            <footer className="mt-20 pb-12 text-center">
-              <div className="flex items-center justify-center gap-4 mb-4">
+            <footer className="mt-20 pb-12 text-center px-8">
+              <div className="flex items-center justify-center gap-4 mb-6">
                 <a href="https://github.com/abhinavnixabvv-hue" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-zinc-950 transition-colors">
                   <Github className="w-5 h-5" />
                 </a>
               </div>
-              <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.3em]">© 2026 C Program Master • Hexnic AI</p>
+              <div className="space-y-2">
+                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                  Developed by Students of Vidya Academy of Science and Technology
+                </p>
+                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em]">
+                  © 2026 HexnicAI || Part of ATS_PDZ
+                </p>
+                <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-[0.4em] pt-2">
+                  ALL RIGHTS RESERVED.
+                </p>
+              </div>
             </footer>
           </motion.div>
         ) : (
@@ -561,7 +571,17 @@ export default function App() {
                       </div>
 
                       <footer className="mt-20 pb-12 border-t border-zinc-100 pt-8 text-center">
-                        {/* Removed credit */}
+                        <div className="space-y-2">
+                          <p className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">
+                            Developed by Students of Vidya Academy of Science and Technology
+                          </p>
+                          <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-wider">
+                            © 2026 HexnicAI || Part of ATS_PDZ
+                          </p>
+                          <p className="text-[8px] font-bold text-zinc-400 uppercase tracking-[0.3em]">
+                            ALL RIGHTS RESERVED.
+                          </p>
+                        </div>
                       </footer>
                     </motion.div>
                   </div>
