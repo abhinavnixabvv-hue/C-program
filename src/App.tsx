@@ -36,6 +36,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { AIBot } from "@/src/components/AIBot";
 
 export default function App() {
   const [activeSetId, setActiveSetId] = useState<number>(0); // 0 for Home
@@ -148,16 +149,27 @@ export default function App() {
                   <div className="flex flex-wrap gap-4 pt-4">
                     <button 
                       onClick={() => setActiveSetId(1)}
-                      className="px-10 py-4 bg-zinc-950 text-white rounded-2xl font-bold text-lg hover:bg-zinc-800 transition-all shadow-2xl shadow-zinc-200 flex items-center gap-3 group"
+                      className="px-8 py-4 bg-emerald-600 text-white rounded-2xl font-bold text-lg hover:bg-emerald-700 transition-all shadow-2xl shadow-emerald-200 flex items-center gap-3 group"
                     >
-                      Start Learning Now
+                      <Terminal className="w-5 h-5" />
+                      C Lab Exam
                       <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </button>
+                    <button 
+                      onClick={() => setActiveSetId(13)}
+                      className="px-8 py-4 bg-blue-600 text-white rounded-2xl font-bold text-lg hover:bg-blue-700 transition-all shadow-2xl shadow-blue-200 flex items-center gap-3 group"
+                    >
+                      <FileText className="w-5 h-5" />
+                      Previous Papers
+                      <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                  </div>
+                  <div className="pt-4">
                     <a 
                       href="https://hexnicai.vercel.app/" 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="px-10 py-4 bg-white border border-zinc-200 text-zinc-950 rounded-2xl font-bold text-lg hover:bg-zinc-50 transition-all flex items-center gap-3"
+                      className="inline-flex items-center gap-3 px-10 py-4 bg-white border border-zinc-200 text-zinc-950 rounded-2xl font-bold text-lg hover:bg-zinc-50 transition-all"
                     >
                       Visit Hexnic AI
                     </a>
@@ -347,34 +359,71 @@ export default function App() {
                 </div>
 
                 <div className="space-y-1">
-                  <p className="px-3 text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Question Sets</p>
-                  {filteredSets.map((set) => (
-                    <button
-                      key={set.id}
-                      onClick={() => setActiveSetId(set.id)}
-                      className={cn(
-                        "w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-all group",
-                        activeSetId === set.id 
-                          ? "bg-zinc-950 text-white shadow-lg shadow-zinc-200" 
-                          : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
-                      )}
-                    >
-                      <span className={cn(
-                        "flex-shrink-0 w-6 h-6 flex items-center justify-center rounded text-[10px] font-bold",
-                        activeSetId === set.id ? "bg-zinc-800" : "bg-zinc-200 group-hover:bg-zinc-300"
-                      )}>
-                        {set.id.toString().padStart(2, '0')}
-                      </span>
-                      <span className="truncate text-left">{set.title}</span>
-                      {activeSetId === set.id && (
-                        <ChevronRight className="ml-auto w-4 h-4 opacity-50" />
-                      )}
-                    </button>
-                  ))}
+                <div className="space-y-6">
+                  {/* C Lab Exam Category */}
+                  <div>
+                    <div className="flex items-center gap-2 px-3 mb-2">
+                      <Terminal className="w-3 h-3 text-emerald-600" />
+                      <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">C Lab Exam</p>
+                    </div>
+                    <div className="space-y-1">
+                      {filteredSets.filter(s => s.category === "C Lab Exam").map((set) => (
+                        <button
+                          key={set.id}
+                          onClick={() => setActiveSetId(set.id)}
+                          className={cn(
+                            "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all group",
+                            activeSetId === set.id 
+                              ? "bg-emerald-600 text-white shadow-lg shadow-emerald-100" 
+                              : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
+                          )}
+                        >
+                          <span className={cn(
+                            "flex-shrink-0 w-6 h-6 flex items-center justify-center rounded text-[10px] font-bold",
+                            activeSetId === set.id ? "bg-emerald-700" : "bg-zinc-200 group-hover:bg-zinc-300"
+                          )}>
+                            {set.id.toString().padStart(2, '0')}
+                          </span>
+                          <span className="truncate text-left">{set.title.split(': ')[1] || set.title}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Previous Question Papers Category */}
+                  <div>
+                    <div className="flex items-center gap-2 px-3 mb-2">
+                      <FileText className="w-3 h-3 text-blue-600" />
+                      <p className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">Previous Papers</p>
+                    </div>
+                    <div className="space-y-1">
+                      {filteredSets.filter(s => s.category === "Previous Question Papers").map((set) => (
+                        <button
+                          key={set.id}
+                          onClick={() => setActiveSetId(set.id)}
+                          className={cn(
+                            "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all group",
+                            activeSetId === set.id 
+                              ? "bg-blue-600 text-white shadow-lg shadow-blue-100" 
+                              : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
+                          )}
+                        >
+                          <span className={cn(
+                            "flex-shrink-0 w-6 h-6 flex items-center justify-center rounded text-[10px] font-bold",
+                            activeSetId === set.id ? "bg-blue-700" : "bg-zinc-200 group-hover:bg-zinc-300"
+                          )}>
+                            {set.id.toString().padStart(2, '0')}
+                          </span>
+                          <span className="truncate text-left">{set.title}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
+            </div>
 
-              <div className="p-4 border-t border-zinc-200 bg-zinc-50/50">
+            <div className="p-4 border-t border-zinc-200 bg-zinc-50/50">
                 <div className="flex items-center gap-3 p-3 rounded-lg border border-zinc-200 bg-white mb-4">
                   <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center">
                     <GraduationCap className="w-4 h-4 text-zinc-600" />
@@ -382,7 +431,7 @@ export default function App() {
                   <div className="text-[10px]">
                     <p className="font-bold text-zinc-900 uppercase tracking-tighter">Course Progress</p>
                     <div className="w-32 h-1 bg-zinc-100 rounded-full mt-1 overflow-hidden">
-                      <div className="h-full bg-zinc-950" style={{ width: `${(activeSetId / 12) * 100}%` }}></div>
+                      <div className="h-full bg-zinc-950" style={{ width: `${(activeSetId / questionSets.length) * 100}%` }}></div>
                     </div>
                   </div>
                 </div>
@@ -622,6 +671,8 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <AIBot />
 
       {/* Bug Report FAB */}
       <button 
