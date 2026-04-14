@@ -34,7 +34,6 @@
   @apply bg-zinc-500;
 }
 @import "tw-animate-css";
-@import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 
 @custom-variant dark (&:is(.dark *));
